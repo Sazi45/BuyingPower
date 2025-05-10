@@ -1,0 +1,82 @@
+@page "/signup"
+@using System.Text.RegularExpressions
+@inject BuyingPower.Services.AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<h3>Create an Account</h3>
+
+<div class="form-group">
+    <label>First Name:</label>
+    <input @bind="FirstName" class="form-control" />
+</div>
+<div class="form-group">
+    <label>Last Name:</label>
+    <input @bind="LastName" class="form-control" />
+</div>
+<div class="form-group">
+    <label>Email:</label>
+    <input @bind="Email" class="form-control" />
+</div>
+<div class="form-group">
+    <label>Password:</label>
+    <input @bind="Password" type="password" class="form-control" />
+</div>
+<div class="form-group">
+    <label>Confirm Password:</label>
+    <input @bind="ConfirmPassword" type="password" class="form-control" />
+</div>
+<button class="btn btn-success" @onclick="HandleRegister">Sign Up</button>
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="text-danger mt-2">@ErrorMessage</div>
+}
+
+@code {
+    private string FirstName;
+    private string LastName;
+    private string Email;
+    private string Password;
+    private string ConfirmPassword;
+    private string ErrorMessage;
+
+    private void HandleRegister()
+    {
+        if (!IsValidEmail(Email))
+        {
+            ErrorMessage = "Please enter a valid email address.";
+            return;
+        }
+
+        if (Password != ConfirmPassword)
+        {
+            ErrorMessage = "Passwords do not match.";
+            return;
+        }
+
+        if (AuthService.Register(FirstName, LastName, Email, Password))
+        {
+            AuthService.SendVerificationEmail(Email);
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            ErrorMessage = "Email already exists.";
+        }
+    }
+
+    private bool IsValidEmail(string email)
+    {
+        return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+    }
+
+}
+
+    if (AuthService.Register(FirstName, LastName, Email, Password))
+{
+    AuthService.SendVerificationEmail(Email);
+    ErrorMessage = "Account created successfully! Please check your email to verify.";
+    NavigationManager.NavigateTo("/login");
+}
+
+}

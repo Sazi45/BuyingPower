@@ -1,0 +1,37 @@
+@page "/verify"
+@using BuyingPower.Services
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+
+<h3>Email Verification</h3>
+
+@if (verified == null)
+{
+    <p>Verifying...</p>
+}
+else if (verified == true)
+{
+    <p class="text-success">Your email has been successfully verified! You may now <a href="/login">log in</a>.</p>
+}
+else
+{
+    <p class="text-danger">Invalid or expired verification link.</p>
+}
+
+@code {
+    private bool? verified = null;
+
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(NavigationManager.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        if (query.TryGetValue("token", out var token))
+        {
+            verified = AuthService.VerifyEmail(token);
+        }
+        else
+        {
+            verified = false;
+        }
+    }
+}

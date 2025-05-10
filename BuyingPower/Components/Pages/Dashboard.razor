@@ -1,0 +1,28 @@
+@page "/dashboard"
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+@if (!AuthService.IsAuthenticated)
+{
+    <p>Redirecting to login...</p>
+    @code {
+    protected override void OnInitialized()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+    }
+}
+else
+{
+    <h2>Welcome, @AuthService.FullName!</h2>
+    <p>This is your dashboard.</p>
+    <button class="btn btn-danger" @onclick="Logout">Logout</button>
+}
+
+@code {
+    private void Logout()
+    {
+        AuthService.Logout();
+        NavigationManager.NavigateTo("/login");
+    }
+}
