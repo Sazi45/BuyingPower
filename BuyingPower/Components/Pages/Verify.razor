@@ -1,7 +1,8 @@
 @page "/verify"
 @using BuyingPower.Services
+@using Microsoft.AspNetCore.WebUtilities
+@inject BuyingPower.Services.AuthService AuthService
 @inject NavigationManager NavigationManager
-@inject AuthService AuthService
 
 <h3>Email Verification</h3>
 
